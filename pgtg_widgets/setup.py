@@ -7,5 +7,5 @@ setup(name='pygame_widgets',
       description='widgets for Pygame library',
       packages=['pygame_widgets'],
       author_email='grammarline@yandex.ru',
-      long_description=open('README.md').read(),
+      long_description=open('../README.md').read(),
       zip_safe=False)
