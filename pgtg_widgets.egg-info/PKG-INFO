@@ -1,3 +1,11 @@
+Metadata-Version: 2.1
+Name: pgtg-widgets
+Version: 0.0.1
+Summary: widgets for Pygame library
+Home-page: https://github.com/TeaGuardian/pgtg_widgets
+Author-email: grammarline@yandex.ru
+License: Apache 2.0
+
 # pgtg_widgets
 it will help you quickly and easily create a user interface for your PyGame application
 
