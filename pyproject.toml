@@ -1,9 +1,9 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 [project]
 name = "pgtg_widgets"
-version = "0.0.3"
+version = "0.0.6"
 authors = [
   { name="Tea-Guardian", email="grammarline@yandex.ru" },
 ]
