@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import pygame as pg
-from widgets import Button, ProgressBar, Switch
-from catchers import button_catcher, switch_catcher, COLORS
+from .widgets import Button, ProgressBar, Switch
+from .catchers import button_catcher, switch_catcher, COLORS
 
 
 class Timer:
