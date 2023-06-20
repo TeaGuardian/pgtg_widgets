@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta
 import pygame as pg
 from pgtg_widgets.widgets import *
 
@@ -13,11 +12,12 @@ COLORS = {"wh": (30, 30, 30), "gr": (100, 100, 110), "fn": (90, 100, 90), "li": 
 class Timer:
     """delay class"""
     def __init__(self, tick):
-        self.tick, self.last = tick, datetime.now()
+        self.tick, self.last = tick, pg.time.get_ticks()
 
     def tk(self):
-        if (datetime.now() - self.last) > timedelta(seconds=self.tick):
-            self.last = datetime.now()
+        if self.last + self.tick < pg.time.get_ticks():
+            self.last = pg.time.get_ticks()
+            print(20)
             return True
         return False
 
@@ -26,13 +26,13 @@ def start_demo():
     """can help you to see how to use it"""
     pg.init()
     print("and also Hello from pygame_widgets! Good luck! \nP.s. use this package how you want")
-    prog, timer, st = 0, Timer(0.02), -1
+    prog, timer, st = 0, Timer(5000), -1
     sc = pg.display.set_mode((600, 600))
     font = pg.font.Font(None, 30)
     switch = Switch(sc, (10, 10, 120, 40), COLORS['lilac'], COLORS['dark_blue'], COLORS['yellow'], state=True)
     button = Button(sc, (10, 80, 120, 40), font, COLORS['blue'], text="SET 0%..", text_color=COLORS['green'], an_col=COLORS['blue'], an_li=0.5)
     button2 = Button(sc, (140, 80, 120, 40), font, COLORS['blue'], text="SET 50%..", text_color=COLORS['green'], an_col=COLORS['blue'], an_li=0.1)
-    progress_bar = ProgressBar(sc, (10, 140, 400, 20), COLORS['dark_green'], COLORS['orange'], COLORS['yellow'], border=4)
+    progress_bar = ProgressBar(sc, (10, 140, 400, 20), COLORS['dark_green'], COLORS['orange'], COLORS['yellow'], border=4, phis_t=50, phis_st=2, show_real=True)
     inp_u = InputBox(sc, (10, 180, 200, 40), font, COLORS['lilac'], COLORS['yellow'], sub_moo=-1)
     tex_u = TextBox(sc, (220, 180, 200, 40), font, COLORS['orange'], sub_moo=-1, text='u')
     inp_s = InputBox(sc, (10, 230, 200, 40), font, COLORS['lilac'], COLORS['yellow'], sub_moo=0)
@@ -62,7 +62,7 @@ def start_demo():
         for i in al_ob:
             i.show()
         if timer.tk():
-            prog += st * 0.1
+            prog += st * 2
             prog = 100 if prog > 100 else 0 if prog < 0 else prog
             progress_bar.set_prog(prog)
         st = 1 if switch.get_real_state() else -1

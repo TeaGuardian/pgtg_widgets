@@ -1,5 +1,6 @@
 import pygame as pg
 lim255 = lambda g: 255 if g > 255 else g if g > 0 else 0
+napcon = lambda g: -1 if g < 0 else 1 if g > 0 else 0
 
 
 class Button:
@@ -134,12 +135,12 @@ class Switch:
 
 
 class ProgressBar:
-    def __init__(self, sc, int_rect, col_bor, col_off, col_on, border=4, grad=255):
+    def __init__(self, sc, int_rect, col_bor, col_off, col_on, border=4, grad=255, phis_t=0, phis_st=10, show_real=False):
         x, y, sx, sy = int_rect
-        self.x, self.y, self.sx, self.sy, self.col_bor = x, y, sx, sy, col_bor
-        self.plot, self.col_off, self.col_on = pg.Surface((sx, sy)), col_off, col_on
-        self.bor, self.sc, self.grad = border, sc, grad
-        self.ma, self.mi = sx - self.bor, 4 * self.bor
+        self.x, self.y, self.sx, self.sy, self.col_bor, self.phis_t = x, y, sx, sy, col_bor, phis_t
+        self.plot, self.col_off, self.col_on, self.phis_lt = pg.Surface((sx, sy)), col_off, col_on, pg.time.get_ticks()
+        self.bor, self.sc, self.grad, self.iner, self.phis_st = border, sc, grad, 0, phis_st
+        self.ma, self.mi, self.show_real = sx - self.bor, 4 * self.bor, show_real
         self.step, self.las = (self.ma - self.mi) / 100, 0
         self.render()
 
@@ -148,11 +149,20 @@ class ProgressBar:
         self.plot.fill([0, 0, 0])
         self.plot.set_alpha(self.grad)
         pg.draw.rect(self.plot, self.col_off, (0, 0, self.sx, self.sy), border_radius=po)
+        if self.show_real:
+            pg.draw.rect(self.plot, list(map(lambda g, g2: (g + g2) // 2, self.col_on, self.col_off)), (0, 0, now, self.sy), border_radius=po)
+        if self.phis_t > 0 and self.phis_t + self.phis_lt < pg.time.get_ticks():
+            self.phis_lt = pg.time.get_ticks()
+            self.iner += napcon(now - self.iner) * self.phis_st * 0 if now - self.iner <= self.phis_st else 1
+        if self.phis_t > 0:
+            now = int(self.iner)
         pg.draw.rect(self.plot, self.col_on, (0, 0, now, self.sy), border_radius=po)
         pg.draw.rect(self.plot, self.col_bor, (0, 0, self.sx, self.sy), self.bor, border_radius=po)
         self.plot.set_colorkey([0, 0, 0])
 
     def show(self):
+        if self.phis_t > 0 and self.phis_t + self.phis_lt < pg.time.get_ticks():
+            self.render()
         self.sc.blit(self.plot, (self.x, self.y))
 
     def set_prog(self, per):
