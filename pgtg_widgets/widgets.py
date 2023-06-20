@@ -146,17 +146,20 @@ class ProgressBar:
 
     def render(self):
         po, now = self.sy // 10, int(self.mi + self.step * self.las)
+        now2 = now
         self.plot.fill([0, 0, 0])
         self.plot.set_alpha(self.grad)
         pg.draw.rect(self.plot, self.col_off, (0, 0, self.sx, self.sy), border_radius=po)
-        if self.show_real:
+        if self.show_real and napcon(now - self.iner) > 0:
             pg.draw.rect(self.plot, list(map(lambda g, g2: (g + g2) // 2, self.col_on, self.col_off)), (0, 0, now, self.sy), border_radius=po)
         if self.phis_t > 0 and self.phis_t + self.phis_lt < pg.time.get_ticks():
             self.phis_lt = pg.time.get_ticks()
-            self.iner += napcon(now - self.iner) * self.phis_st * 0 if now - self.iner <= self.phis_st else 1
+            self.iner += napcon(now - self.iner) * self.phis_st * (0 if abs(now - self.iner) <= self.phis_st else 1)
         if self.phis_t > 0:
             now = int(self.iner)
         pg.draw.rect(self.plot, self.col_on, (0, 0, now, self.sy), border_radius=po)
+        if self.show_real and napcon(now2 - self.iner) < 0:
+            pg.draw.rect(self.plot, list(map(lambda g, g2: (g + g2) // 2, self.col_on, self.col_off)), (0, 0, now2, self.sy), border_radius=po)
         pg.draw.rect(self.plot, self.col_bor, (0, 0, self.sx, self.sy), self.bor, border_radius=po)
         self.plot.set_colorkey([0, 0, 0])
 
